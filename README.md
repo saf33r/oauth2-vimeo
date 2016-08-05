@@ -21,11 +21,28 @@ The following versions of PHP are supported.
 * PHP 7.0
 * HHVM
 
+## Installation
+
+To install, use composer:
+
+```
+composer require saf33r/oauth2-vimeo
+```
+
+## Usage
+
+Usage is the same as The League's OAuth client, just use `Saf33r\OAuth2\Client\Provider\Vimeo` as the provider. Please refer to [core package documentation on "Authorization Code Grant"](https://github.com/thephpleague/oauth2-client#usage) for more information.
+
 ## Testing
 
-``` bash
+```
 $ ./vendor/bin/phpunit
 ```
+
+## Credits
+
+- [Safeer Ahmed](https://github.com/saf33r)
+- [All Contributors](https://github.com/saf33r/oauth2-vimeo/contributors)
 
 ## License
 
