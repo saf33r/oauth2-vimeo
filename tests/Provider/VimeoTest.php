@@ -92,9 +92,10 @@ class VimeoTest extends \PHPUnit_Framework_TestCase
         $image = uniqid();
         $link = 'https://vimeo.com/' . $username;
         $resourceKey = uniqid();
+        $tokenScope = 'public';
 
         $postResponse = m::mock('Psr\Http\Message\ResponseInterface');
-        $postResponse->shouldReceive('getBody')->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&otherKey={1234}');
+        $postResponse->shouldReceive('getBody')->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&otherKey=1234&scope=' . $tokenScope);
         $postResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'application/x-www-form-urlencoded']);
         $postResponse->shouldReceive('getStatusCode')->andReturn(200);
 
@@ -115,6 +116,15 @@ class VimeoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($username, $user->getUsername());
         $this->assertEquals($link, $user->getLink());
         $this->assertEquals($image, $user->getAvatar());
+
+        // test getTokenScope
+        $this->assertEquals($tokenScope, $user->getTokenScope());
+
+        // test toArray
+        $toArray = $user->toArray();
+        $this->assertFalse(empty($toArray));
+        $this->assertTrue(is_array($toArray));
+        $this->assertEquals($name, $toArray['name']);
     }
 
     /**

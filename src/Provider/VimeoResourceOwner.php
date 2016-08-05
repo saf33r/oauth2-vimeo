@@ -26,7 +26,7 @@ class VimeoResourceOwner implements ResourceOwnerInterface
      *
      * @param array $response
      */
-    public function __construct(array $response = [], AccessToken $token)
+    public function __construct(array $response, AccessToken $token)
     {
         $this->response = $response;
         $this->token = $token;
