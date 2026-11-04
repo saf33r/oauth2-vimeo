@@ -1,6 +1,6 @@
 # Vimeo Provider for OAuth 2.0 Client
 
-[![Build Status](https://travis-ci.org/saf33r/oauth2-vimeo.png?branch=master)](https://travis-ci.org/saf33r/oauth2-vimeo)
+[![Tests](https://github.com/saf33r/oauth2-vimeo/actions/workflows/tests.yml/badge.svg)](https://github.com/saf33r/oauth2-vimeo/actions/workflows/tests.yml)
 
 This package provides Vimeo OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
