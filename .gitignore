@@ -4,3 +4,4 @@ composer.lock
 coverage.clover
 build/
 .DS_Store
+.phpunit.result.cache

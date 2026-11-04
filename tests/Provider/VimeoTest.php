@@ -2,14 +2,15 @@
 
 namespace Saf33r\OAuth2\Client\Test\Provider;
 
+use GuzzleHttp\Psr7\Utils;
 use Mockery as m;
 use Saf33r\OAuth2\Client\Provider\Vimeo;
 
-class VimeoTest extends \PHPUnit_Framework_TestCase
+class VimeoTest extends \PHPUnit\Framework\TestCase
 {
     protected $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new Vimeo([
             'clientId'     => 'mock_client_id',
@@ -18,7 +19,7 @@ class VimeoTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         m::close();
     }
@@ -44,7 +45,7 @@ class VimeoTest extends \PHPUnit_Framework_TestCase
 
         $url = $this->provider->getAuthorizationUrl($options);
 
-        $this->assertContains(rawurlencode(implode(' ', $options['scope'])), $url);
+        $this->assertStringContainsString(rawurlencode(implode(' ', $options['scope'])), $url);
     }
 
     public function testGetAuthorizationUrl()
@@ -68,7 +69,7 @@ class VimeoTest extends \PHPUnit_Framework_TestCase
     public function testGetAccessToken()
     {
         $response = m::mock('Psr\Http\Message\ResponseInterface');
-        $response->shouldReceive('getBody')->andReturn('{"access_token":"mock_access_token", "scope":"repo,gist", "token_type":"bearer"}');
+        $response->shouldReceive('getBody')->andReturn(Utils::streamFor('{"access_token":"mock_access_token", "scope":"repo,gist", "token_type":"bearer"}'));
         $response->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
         $response->shouldReceive('getStatusCode')->andReturn(200);
 
@@ -95,12 +96,12 @@ class VimeoTest extends \PHPUnit_Framework_TestCase
         $tokenScope = 'public';
 
         $postResponse = m::mock('Psr\Http\Message\ResponseInterface');
-        $postResponse->shouldReceive('getBody')->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&otherKey=1234&scope=' . $tokenScope);
+        $postResponse->shouldReceive('getBody')->andReturn(Utils::streamFor('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&otherKey=1234&scope=' . $tokenScope));
         $postResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'application/x-www-form-urlencoded']);
         $postResponse->shouldReceive('getStatusCode')->andReturn(200);
 
         $userResponse = m::mock('Psr\Http\Message\ResponseInterface');
-        $userResponse->shouldReceive('getBody')->andReturn($this->mockGetMe($id, $name, $link, $image, $resourceKey));
+        $userResponse->shouldReceive('getBody')->andReturn(Utils::streamFor($this->mockGetMe($id, $name, $link, $image, $resourceKey)));
         $userResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
         $userResponse->shouldReceive('getStatusCode')->andReturn(200);
 
@@ -127,15 +128,14 @@ class VimeoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($name, $toArray['name']);
     }
 
-    /**
-     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-     **/
     public function testExceptionThrownWhenErrorObjectReceived()
     {
+        $this->expectException(\League\OAuth2\Client\Provider\Exception\IdentityProviderException::class);
+
         $message = uniqid();
         $status = rand(400, 600);
         $postResponse = m::mock('Psr\Http\Message\ResponseInterface');
-        $postResponse->shouldReceive('getBody')->andReturn(' {"error":"' . $message . '", "code": "' . $status . '"}');
+        $postResponse->shouldReceive('getBody')->andReturn(Utils::streamFor(' {"error":"' . $message . '", "code": "' . $status . '"}'));
         $postResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
         $postResponse->shouldReceive('getStatusCode')->andReturn($status);
 
